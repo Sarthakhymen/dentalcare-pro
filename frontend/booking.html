@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Book your dental appointment online. Choose your preferred date, time, and describe your dental concern.">
+  <title>Book Appointment — DentalCare Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══════════ Navigation ═══════════ -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">🦷</div>
+        DentalCare Pro
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#doctor">Our Doctor</a>
+      </div>
+      <div class="nav-cta">
+        <a href="booking.html" class="btn btn-primary">Book Appointment</a>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════ Booking Page ═══════════ -->
+  <section class="booking-page">
+    <div class="booking-container">
+      <div class="booking-header">
+        <span class="section-label">📅 Book Appointment</span>
+        <h1 class="section-title">Schedule Your Visit</h1>
+        <p class="section-subtitle mx-auto">Fill in your details below and we'll get back to you within 24 hours with a confirmation.</p>
+      </div>
+
+      <div class="booking-form-card">
+        <form id="bookingForm" novalidate>
+          <!-- Patient Name -->
+          <div class="form-group">
+            <label for="patientName">Full Name <span class="required">*</span></label>
+            <input type="text" id="patientName" class="form-control" placeholder="John Doe" required>
+            <div class="form-error" id="nameError">Please enter your full name</div>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label for="patientEmail">Email Address <span class="required">*</span></label>
+            <input type="email" id="patientEmail" class="form-control" placeholder="john@example.com" required>
+            <div class="form-error" id="emailError">Please enter a valid email address</div>
+          </div>
+
+          <!-- Phone (Required for SMS notifications) -->
+          <div class="form-group">
+            <label for="patientPhone">Phone Number <span class="required">*</span></label>
+            <input type="tel" id="patientPhone" class="form-control" placeholder="+919876543210" required>
+            <div class="form-error" id="phoneError">Please enter your phone number (with country code)</div>
+          </div>
+
+          <!-- Date & Time -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="appointmentDate">Preferred Date <span class="required">*</span></label>
+              <input type="date" id="appointmentDate" class="form-control" required>
+              <div class="form-error" id="dateError">Please select a date</div>
+            </div>
+            <div class="form-group">
+              <label for="appointmentTime">Preferred Time <span class="required">*</span></label>
+              <select id="appointmentTime" class="form-control" required>
+                <option value="">Select a time slot</option>
+                <option value="09:00">09:00 AM</option>
+                <option value="09:30">09:30 AM</option>
+                <option value="10:00">10:00 AM</option>
+                <option value="10:30">10:30 AM</option>
+                <option value="11:00">11:00 AM</option>
+                <option value="11:30">11:30 AM</option>
+                <option value="12:00">12:00 PM</option>
+                <option value="14:00">02:00 PM</option>
+                <option value="14:30">02:30 PM</option>
+                <option value="15:00">03:00 PM</option>
+                <option value="15:30">03:30 PM</option>
+                <option value="16:00">04:00 PM</option>
+                <option value="16:30">04:30 PM</option>
+                <option value="17:00">05:00 PM</option>
+                <option value="17:30">05:30 PM</option>
+              </select>
+              <div class="form-error" id="timeError">Please select a time slot</div>
+            </div>
+          </div>
+
+          <!-- Dental Problem -->
+          <div class="form-group">
+            <label for="problemType">Type of Dental Issue</label>
+            <select id="problemType" class="form-control">
+              <option value="">Select issue type</option>
+              <option value="Cleaning">Routine Cleaning</option>
+              <option value="Root Canal">Root Canal</option>
+              <option value="Braces">Braces / Aligners</option>
+              <option value="Whitening">Teeth Whitening</option>
+              <option value="Implant">Dental Implant</option>
+              <option value="Filling">Cavity / Filling</option>
+              <option value="Extraction">Tooth Extraction</option>
+              <option value="Checkup">General Checkup</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <!-- Additional Details -->
+          <div class="form-group">
+            <label for="problemDetails">Additional Details</label>
+            <textarea id="problemDetails" class="form-control" placeholder="Describe your dental concern or any symptoms you're experiencing..." rows="4"></textarea>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn btn-primary submit-btn btn-lg" id="submitBtn">
+            📩 Submit Appointment Request
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Loading Spinner -->
+  <div class="spinner-overlay" id="spinnerOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

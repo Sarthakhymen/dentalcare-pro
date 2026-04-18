@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Doctor Dashboard — Manage appointment requests, approve or reject patient bookings.">
+  <title>Doctor Dashboard — DentalCare Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══════════ Login Screen ═══════════ -->
+  <div class="login-page" id="loginPage">
+    <div class="login-card">
+      <div class="logo">
+        <div class="nav-logo-icon" style="width:56px;height:56px;font-size:28px;margin:0 auto;border-radius:16px;">🦷</div>
+        <h2>Doctor Dashboard</h2>
+        <p>Sign in to manage appointments</p>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="doctor@dentalcare.com" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary submit-btn" id="loginBtn">
+          🔐 Sign In
+        </button>
+      </form>
+      <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--slate-400);">
+        Demo: doctor@dentalcare.com / doctor123
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════ Dashboard (hidden by default) ═══════════ -->
+  <div class="dashboard-page" id="dashboardPage" style="display:none;">
+    
+    <!-- Dashboard Header -->
+    <header class="dash-header">
+      <div class="container">
+        <a href="index.html" class="nav-logo">
+          <div class="nav-logo-icon">🦷</div>
+          DentalCare Pro
+        </a>
+        <div class="welcome">
+          Welcome, <strong id="doctorName">Doctor</strong>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <a href="http://localhost:3000/" class="btn btn-outline btn-sm">🏠 Home</a>
+          <button class="btn btn-sm" style="background:var(--slate-200);color:var(--slate-700);" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="dash-main">
+      <div class="container">
+        <!-- Stats Cards -->
+        <div class="dash-stats" id="statsCards">
+          <div class="stat-card">
+            <div class="stat-icon total">📋</div>
+            <div class="stat-number" id="totalCount">0</div>
+            <div class="stat-label">Total Appointments</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon pending">⏳</div>
+            <div class="stat-number" id="pendingCount">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon confirmed">✅</div>
+            <div class="stat-number" id="confirmedCount">0</div>
+            <div class="stat-label">Confirmed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon rejected">❌</div>
+            <div class="stat-number" id="rejectedCount">0</div>
+            <div class="stat-label">Rejected</div>
+          </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs" id="filterTabs">
+          <button class="filter-tab active" data-filter="all">All</button>
+          <button class="filter-tab" data-filter="pending">⏳ Pending</button>
+          <button class="filter-tab" data-filter="confirmed">✅ Confirmed</button>
+          <button class="filter-tab" data-filter="rejected">❌ Rejected</button>
+        </div>
+
+        <!-- Appointments Table -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Patient Name</th>
+                <th>Email</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Problem</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsTable">
+              <!-- Dynamic rows inserted by JS -->
+            </tbody>
+          </table>
+          <!-- Empty state -->
+          <div class="empty-state" id="emptyState" style="display:none;">
+            <div class="icon">📭</div>
+            <h3>No appointments found</h3>
+            <p>There are no appointments matching the current filter.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Loading Spinner -->
+  <div class="spinner-overlay" id="spinnerOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
