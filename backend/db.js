@@ -6,8 +6,8 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
-// Create a connection pool for better performance and connection management
-const pool = mysql.createPool({
+// Create a connection pool with intelligent variable detection
+const dbConfig = {
   host: process.env.MYSQLHOST || process.env.DB_HOST || 'localhost',
   user: process.env.MYSQLUSER || process.env.DB_USER,
   password: process.env.MYSQLPASSWORD || process.env.DB_PASS,
@@ -16,9 +16,14 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  // Enable multiple statements for initialization
   multipleStatements: true
-});
+};
+
+// Debug log (Masked)
+console.log(`📡 Attempting DB connection to: ${dbConfig.host}:${dbConfig.port} as user: ${dbConfig.user}`);
+
+const pool = mysql.createPool(dbConfig);
+
 
 
 // Initialize database tables if they don't exist
