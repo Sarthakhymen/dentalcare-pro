@@ -58,7 +58,20 @@ async function initializeDatabase() {
 
     connection.release();
     console.log('✅ Database tables initialized successfully');
+
+    // --- Auto-Seed: Create default doctor if none exist ---
+    const [doctors] = await pool.query('SELECT * FROM doctors LIMIT 1');
+    if (doctors.length === 0) {
+      const bcrypt = require('bcryptjs');
+      const hashedPassword = await bcrypt.hash('doctor123', 12);
+      await pool.query(
+        'INSERT INTO doctors (name, email, password) VALUES (?, ?, ?)',
+        ['Dr. Sarah Mitchell', 'doctor@dentalcare.com', hashedPassword]
+      );
+      console.log('✨ Auto-seeded: Default doctor account created (doctor@dentalcare.com / doctor123)');
+    }
   } catch (error) {
+
     console.error('❌ Database initialization error:', error.message);
     throw error;
   }
