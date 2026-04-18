@@ -292,25 +292,25 @@ function formatTime(timeStr) {
 
     showSpinner();
     try {
-      const response = await fetch(`${API_BASE}/approve/${id}`);
-      showToast('Appointment approved! Opening WhatsApp...', 'success');
+      // Call backend to update status and get WhatsApp link
+      const response = await fetch(`${API_BASE}/approve/${id}?format=json`);
+      if (!response.ok) throw new Error('Network response was not ok');
       
-      // Auto-open WhatsApp chat with patient
-      const apt = allAppointments.find(a => a.id === id);
-      if (apt && apt.patient_phone) {
-        let phone = apt.patient_phone.replace(/\D/g, ''); // strip non-digits
-        if (phone.length === 10) phone = '91' + phone; // prepend India country code if length is 10
-        else if (phone.startsWith('0')) phone = '91' + phone.substring(1);
-
-        const dateObj = new Date(apt.appointment_date);
-        const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' });
+      const data = await response.json();
+      
+      if (data.success) {
+        showToast('Appointment approved successfully!', 'success');
         
-        const message = `✅ *APPOINTMENT CONFIRMED!*\n\nHi ${apt.patient_name}, your dental appointment is confirmed.\n\n📅 *Date:* ${formattedDate}\n🕐 *Time:* ${formatTime(apt.appointment_time)}\n📍 *Location:* DentalCare Pro Clinic\n\n⏰ Please arrive 10 minutes early.`;
+        // Open WhatsApp chat if link is provided
+        if (data.waLink) {
+          window.open(data.waLink, '_blank');
+        }
         
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        // Refresh the appointments list to show updated status
+        await loadAppointments();
+      } else {
+        throw new Error(data.message || 'Failed to approve');
       }
-
-      await loadAppointments();
     } catch (error) {
       console.error('Approve error:', error);
       showToast('Failed to approve appointment', 'error');
@@ -324,22 +324,25 @@ function formatTime(timeStr) {
 
     showSpinner();
     try {
-      const response = await fetch(`${API_BASE}/reject/${id}`);
-      showToast('Appointment rejected. Opening WhatsApp...', 'info');
+      // Call backend to update status and get WhatsApp link
+      const response = await fetch(`${API_BASE}/reject/${id}?format=json`);
+      if (!response.ok) throw new Error('Network response was not ok');
       
-      const apt = allAppointments.find(a => a.id === id);
-      if (apt && apt.patient_phone) {
-        let phone = apt.patient_phone.replace(/\D/g, '');
-        if (phone.length === 10) phone = '91' + phone;
-        else if (phone.startsWith('0')) phone = '91' + phone.substring(1);
-
-        const rebookUrl = window.location.origin + '/booking.html';
-        const message = `❌ *APPOINTMENT UPDATE*\n\nHi ${apt.patient_name}, we're sorry but we couldn't accommodate your requested appointment time.\n\nPlease rebook at a different time:\n📅 ${rebookUrl}\n\nWe'd love to see you!\n— DentalCare Pro`;
+      const data = await response.json();
+      
+      if (data.success) {
+        showToast('Appointment rejected', 'info');
         
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        // Open WhatsApp chat if link is provided
+        if (data.waLink) {
+          window.open(data.waLink, '_blank');
+        }
+        
+        // Refresh the appointments list to show updated status
+        await loadAppointments();
+      } else {
+        throw new Error(data.message || 'Failed to reject');
       }
-
-      await loadAppointments();
     } catch (error) {
       console.error('Reject error:', error);
       showToast('Failed to reject appointment', 'error');

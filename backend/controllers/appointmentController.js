@@ -135,6 +135,7 @@ async function approveAppointment(req, res) {
     // Update status to confirmed
     await pool.query('UPDATE appointments SET status = ? WHERE id = ?', ['confirmed', id]);
 
+    // Construct WhatsApp Link
     let waLink = '';
     if (appointment.patient_phone) {
       let phone = appointment.patient_phone.replace(/\D/g, '');
@@ -148,6 +149,15 @@ async function approveAppointment(req, res) {
       waLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     }
 
+    // Check if JSON response is requested
+    if (req.query.format === 'json' || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+      return res.json({
+        success: true,
+        message: 'Appointment approved successfully',
+        waLink: waLink
+      });
+    }
+
     res.send(generateResponsePage(
       'Appointment Approved ✅',
       `The appointment for <strong>${appointment.patient_name}</strong> has been confirmed. Click the button below to send the confirmation via WhatsApp.`,
@@ -158,6 +168,9 @@ async function approveAppointment(req, res) {
 
   } catch (error) {
     console.error('Approve appointment error:', error);
+    if (req.query.format === 'json') {
+      return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
     res.status(500).send(generateResponsePage('Error', 'Something went wrong. Please try again.', 'error'));
   }
 }
@@ -191,15 +204,29 @@ async function rejectAppointment(req, res) {
     // Update status to rejected
     await pool.query('UPDATE appointments SET status = ? WHERE id = ?', ['rejected', id]);
 
+    // Construct WhatsApp Link
     let waLink = '';
     if (appointment.patient_phone) {
       let phone = appointment.patient_phone.replace(/\D/g, '');
       if (phone.length === 10) phone = '91' + phone;
       else if (phone.startsWith('0')) phone = '91' + phone.substring(1);
 
-      const rebookUrl = (process.env.FRONTEND_URL || 'http://localhost:3000') + '/booking.html';
+      // Dynamically detect host for the rebook URL
+      const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+      const host = req.get('host');
+      const rebookUrl = `${protocol}://${host}/booking.html`;
+      
       const message = `❌ *APPOINTMENT UPDATE*\n\nHi ${appointment.patient_name}, we're sorry but we couldn't accommodate your requested appointment time.\n\nPlease rebook at a different time:\n📅 ${rebookUrl}\n\nWe'd love to see you!\n— DentalCare Pro`;
       waLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    }
+
+    // Check if JSON response is requested
+    if (req.query.format === 'json' || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+      return res.json({
+        success: true,
+        message: 'Appointment rejected successfully',
+        waLink: waLink
+      });
     }
 
     res.send(generateResponsePage(
@@ -212,6 +239,9 @@ async function rejectAppointment(req, res) {
 
   } catch (error) {
     console.error('Reject appointment error:', error);
+    if (req.query.format === 'json') {
+      return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
     res.status(500).send(generateResponsePage('Error', 'Something went wrong. Please try again.', 'error'));
   }
 }
